@@ -1,0 +1,124 @@
+{% extends 'bases/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}Jaguarete Kaa - Carrito{% endblock %}
+{% block content %}
+<main class="main-content">
+  <div class="breadcrumb-area breadcrumb-height" data-bg-image="assets/images/breadcrumb/bg/1-1-1919x388.jpg">
+    <div class="container h-100">
+      <div class="row h-100">
+        <div class="col-lg-12">
+          <div class="breadcrumb-item">
+            <h2 class="breadcrumb-heading">Carrito de compra</h2>
+            <ul>
+              <li>
+                <a href="{% url 'store:home' %}">Home</a>
+              </li>
+              <li>Carrito</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% if cart %}
+  <div class="cart-area section-space-y-axis-100">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="table-content table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th class="product_remove">Eliminar</th>
+                  <th class="product-thumbnail">Imagen</th>
+                  <th class="cart-product-name">Producto</th>
+                  <th class="product-price">Precio Unitario</th>
+                  <th class="product-quantity">Cantidad</th>
+                  <th class="product-subtotal">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in cart %}
+                {% with producto=item.producto %}
+                <tr>
+                  <td class="product_remove">
+                    <form id="myform" action="{% url 'cart:eliminar' producto.id %}" method="post">{% csrf_token %}
+                      <a href="#" onClick="javascript:this.parentNode.submit()">
+                        <i class="pe-7s-close text-danger" data-tippy="Eliminar" data-tippy-inertia="true" data-tippy-animation="shift-away" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-theme="sharpborder"></i>
+                      </a>
+                    </form>
+                  </td>
+                  <td class="product-thumbnail">
+                    <a href="#">
+                      <img src="{{producto.imagen.url}}" alt="">
+                    </a>
+                  </td>
+                  <td class="product-name"><a href="{{producto.get_absolute_url}}">{{producto.nombre|title}}</a></td>
+                  <td class="product-price"><span class="amount">${{producto.precio}}</span></td>
+                  <td class="quantity">
+                    <form action="{% url 'cart:add' producto.id %}" method="post">
+                      {% csrf_token %}
+                      <div class="cart-plus-minus" onClick="javascript:this.parentNode.submit()">
+                        {% render_field item.update_cantidad_form.cantidad type="text" class+="cart-plus-minus-box" %}
+                        <div class="dec qtybutton">
+                          <i class="fa fa-minus"></i>
+                        </div>
+                        <div class="inc qtybutton">
+                          <i class="fa fa-plus"></i>
+                        </div>
+                      </div>
+                      {{ item.update_cantidad_form.override }}
+                    </form>
+                  </td>
+                  <td class="product-subtotal"><span class="amount">${{item.precio_total}}</span></td>
+                </tr>
+                {% endwith %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="coupon-all">
+                <div class="coupon">
+                  <input id="coupon_code" class="input-text" name="coupon_code" value="" placeholder="Coupon code" type="text">
+                  <input class="button mt-xxs-30" name="apply_coupon" value="Apply coupon" type="submit">
+                </div>
+                <div class="coupon2">
+                  <form action="{% url 'cart:clear' %}" method="post">
+                    {% csrf_token %}
+                    <input class="button" name="update_cart" value="Vaciar carrito" type="submit">
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-5 ml-auto">
+              <div class="cart-page-total">
+                <h2>Costo total</h2>
+                <ul>
+                  <li>Subtotal <span>${{cart.get_precio_total}}</span></li>
+                  <li>Descuento <span>$0.0</span></li>
+                  <li>Total <span>${{cart.get_precio_total}}</span></li>
+                </ul>
+                <a href="{% url 'order:create' %}" >FINALIZAR COMPRA</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="row">
+    <div class="container">
+      <div class="d-flex justify-content-center">
+        <img src="{% static 'store/images/empty_cart.png'%}" alt="">
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</main>
+{% endblock %}

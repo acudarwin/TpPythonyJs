@@ -1,0 +1,9 @@
+{% extends 'Ecommerce/base.html' %}
+
+  {% load static %}
+  {% block content %}
+  <h2>{{ category.description }}</h2>
+  <h3>Description</h3>
+  <p id="description">{{ articulo.contenido |safe }}</p>
+  <a href="{% url 'ecommerce:home'%}">Volver</a>
+  {% endblock %}

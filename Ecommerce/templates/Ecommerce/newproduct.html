@@ -1,0 +1,26 @@
+{% extends 'Ecommerce/base.html' %}
+
+  {% load static %}
+  {% block content %}
+  <form enctype="multipart/form-data" action="{% url 'ecommerce:newproduct' %}" method="post" >
+    {% csrf_token %}
+    <div class="form-group row">
+        <label for="titulo_input"  class="col-sm-2 col-form-label">Titulo:</label> {{ form.titulo }} {{ form.titulo.errors }}
+    </div>
+    <div class="form-group row">
+        <label for="imagen_input"  class="col-sm-2 col-form-label">Imagen Adjunta:</label> {{ form.imagen }} {{ form.imagen.errors }}
+    </div>
+    <div class="form-group row"  class="col-sm-2 col-form-label">
+        <label for="description_input">Description:</label><br> {{ form.description }} {{ form.description.errors }}
+        <script>$("#id_description").removeAttr("required");</script>
+    </div>
+    <div class="form-group row">
+      <label for="price_input"  class="col-sm-2 col-form-label">Price:</label> {{ form.price }} {{ form.price.errors }}
+  </div>
+    <div class="col-auto">
+        <a class="btn btn-secondary" type="button" href="{% url 'ecommerce:home'%}">Volver</a>
+        <input type="submit" class="btn btn-primary" value="Publicar">
+    </div>
+</form>
+
+  {% endblock %}
